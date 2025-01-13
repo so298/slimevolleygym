@@ -11,7 +11,7 @@ First, install the dependencies using the following commands:
 
 ```bash
 # Install this repository
-pip install -e git+https://github.com/so298/slimevolleygym.git@main#egg=slimevolleygym
+pip install -e git+https://github.com/so298/slimevolleygym.git@master#egg=slimevolleygym
 
 # Install other dependencies
 pip install "numpy<2.0.0"
