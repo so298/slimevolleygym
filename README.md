@@ -1,3 +1,49 @@
+> [!IMPORTANT]
+>
+> This repository is a fork of [hardmaru/slimevolleygym](https://github.com/hardmaru/slimevolleygym) with some modifications to be run on newer MacOS versions with Apple Silicon CPUs.
+> To install this on your machine, follow the instructions below.
+
+### Installation
+
+I tested this on Python 3.10 and MacOS 15 machine with M1 chip.
+
+First, install the dependencies using the following commands:
+
+```bash
+# Install this repository
+pip install -e git+https://github.com/so298/slimevolleygym.git@main#egg=slimevolleygym
+
+# Install other dependencies
+pip install "numpy<2.0.0"
+pip install -e git+https://github.com/pyglet/pyglet.git@v1.5.30#egg=pyglet
+```
+
+You also need to modify your installed `pyglet` package (most likely in `<your_python_env>/src/pyglet`) to avoid [this bug](https://github.com/mikedh/trimesh/issues/2084#issuecomment-1840072858).
+
+Comment out line 48-49 in `pyglet/pyglet/app/__init__.py`:
+
+```diff
+diff --git a/pyglet/app/__init__.py b/pyglet/app/__init__.py
+index d0cde0ff..0394e54d 100644
+--- a/pyglet/app/__init__.py
++++ b/pyglet/app/__init__.py
+@@ -45,8 +45,8 @@ else:
+     if compat_platform == 'darwin':
+         from pyglet.app.cocoa import CocoaPlatformEventLoop as PlatformEventLoop
+ 
+-        if platform.machine() == 'arm64' or pyglet.options["osx_alt_loop"]:
+-            from pyglet.app.cocoa import CocoaAlternateEventLoop as EventLoop
++        # if platform.machine() == 'arm64' or pyglet.options["osx_alt_loop"]:
++        #     from pyglet.app.cocoa import CocoaAlternateEventLoop as EventLoop
+     elif compat_platform in ('win32', 'cygwin'):
+         from pyglet.app.win32 import Win32EventLoop as PlatformEventLoop
+     else:
+```
+
+---
+
+## Original README
+
 # Slime Volleyball Gym Environment
 
 <p align="left">
@@ -6,7 +52,7 @@
 
 Slime Volleyball is a game created in the early 2000s by an unknown author.
 
-*“The physics of the game are a little ‘dodgy,’ but its simple gameplay made it instantly addictive.”*<br/>
+_“The physics of the game are a little ‘dodgy,’ but its simple gameplay made it instantly addictive.”_<br/>
 
 ---
 
@@ -22,7 +68,7 @@ This environment is based on [Neural Slime Volleyball](https://otoro.net/slimevo
 
 ### Note: Regarding Libraries
 
-- The pre-trained PPO models were trained using [stable-baselines](https://github.com/hill-a/stable-baselines) v2.10, *not* [stable-baselines3](https://github.com/DLR-RM/stable-baselines3).
+- The pre-trained PPO models were trained using [stable-baselines](https://github.com/hill-a/stable-baselines) v2.10, _not_ [stable-baselines3](https://github.com/DLR-RM/stable-baselines3).
 
 - The examples were developed based on Gym version 0.19.0 or earlier. I tested 0.20.0 briefly and it seems to work, but later versions of Gym have API-breaking changes.
 
@@ -86,11 +132,11 @@ Similarly, `test_pixel.py` allows you to play in the pixelated environment, and 
 
 There are two types of environments: state-space observation or pixel observations:
 
-|Environment Id|Observation Space|Action Space
-|---|---|---|
-|SlimeVolley-v0|Box(12)|MultiBinary(3)
-|SlimeVolleyPixel-v0|Box(84, 168, 3)|MultiBinary(3)
-|SlimeVolleyNoFrameskip-v0|Box(84, 168, 3)|Discrete(6)
+| Environment Id            | Observation Space | Action Space   |
+| ------------------------- | ----------------- | -------------- |
+| SlimeVolley-v0            | Box(12)           | MultiBinary(3) |
+| SlimeVolleyPixel-v0       | Box(84, 168, 3)   | MultiBinary(3) |
+| SlimeVolleyNoFrameskip-v0 | Box(84, 168, 3)   | Discrete(6)    |
 
 `SlimeVolleyNoFrameskip-v0` identical to `SlimeVolleyPixel-v0` except that the action space is now a one-hot vector typically used in Atari RL agents.
 
@@ -194,39 +240,39 @@ Below are scores achieved by various algorithms and links to their implementatio
 
 ### SlimeVolley-v0
 
-|Method|Average Score|Episodes|Other Info
-|---|---|---|---|
-|Maximum Possible Score|5.0|  | 
-|PPO | 1.377 ± 1.133 | 1000 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|CMA-ES | 1.148 ± 1.071 | 1000 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|GA (Self-Play) | 0.353 ± 0.728 | 1000 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|CMA-ES (Self-Play) | -0.071 ± 0.827 | 1000 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|PPO (Self-Play) | -0.371 ± 1.085 | 1000 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|Random Policy | -4.866 ± 0.372 | 1000 | 
-|[Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |  |  |  
+| Method                                                                         | Average Score  | Episodes | Other Info                                                                 |
+| ------------------------------------------------------------------------------ | -------------- | -------- | -------------------------------------------------------------------------- |
+| Maximum Possible Score                                                         | 5.0            |          |
+| PPO                                                                            | 1.377 ± 1.133  | 1000     | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| CMA-ES                                                                         | 1.148 ± 1.071  | 1000     | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| GA (Self-Play)                                                                 | 0.353 ± 0.728  | 1000     | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| CMA-ES (Self-Play)                                                             | -0.071 ± 0.827 | 1000     | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| PPO (Self-Play)                                                                | -0.371 ± 1.085 | 1000     | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| Random Policy                                                                  | -4.866 ± 0.372 | 1000     |
+| [Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |                |          |
 
 ### SlimeVolley-v0 (Sample Efficiency)
 
 For sample efficiency, we can measure how many timesteps it took to train an agent that can achieve a positive average score (over 1000 episodes) against the built-in baseline policy:
 
-|Method| Timesteps (Best) | Timesteps (Median)| Trials | Other Info
-|---|---|---|---|---|
-|PPO | 1.274M | 2.998M | 17 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|Data-efficient Rainbow | 0.750M | 0.751M | 3 | [link](https://github.com/pfnet/pfrl/blob/master/examples/slimevolley/README.md)
-|[Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |  |  |  | 
+| Method                                                                         | Timesteps (Best) | Timesteps (Median) | Trials | Other Info                                                                       |
+| ------------------------------------------------------------------------------ | ---------------- | ------------------ | ------ | -------------------------------------------------------------------------------- |
+| PPO                                                                            | 1.274M           | 2.998M             | 17     | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)       |
+| Data-efficient Rainbow                                                         | 0.750M           | 0.751M             | 3      | [link](https://github.com/pfnet/pfrl/blob/master/examples/slimevolley/README.md) |
+| [Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |                  |                    |        |
 
 ### SlimeVolley-v0 (Against Other Agents)
 
 Table of average scores achieved versus agents other than the default baseline policy ([1000 episodes](https://github.com/hardmaru/slimevolleygym/blob/master/eval_agents.py)):
 
-|Method|Baseline|PPO|CMA-ES|GA (Self-Play)| Other Info
-|---|---|---|---|---|---|
-|PPO |  1.377 ± 1.133 | — |  0.133 ± 0.414 | -3.128 ± 1.509 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|CMA-ES | 1.148 ± 1.071 | -0.133 ± 0.414 | — | -0.301 ± 0.618 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|GA (Self-Play) | 0.353 ± 0.728  | 3.128 ± 1.509 | 0.301 ± 0.618 | — | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|CMA-ES (Self-Play) | -0.071 ± 0.827  |  -0.749 ± 0.846 |  -0.351 ± 0.651 |  -4.923 ± 0.342 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|PPO (Self-Play) | -0.371 ± 1.085  | 0.119 ± 1.46 |  -2.304 ± 1.392 |  -0.42 ± 0.717 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|[Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |  |  |
+| Method                                                                         | Baseline       | PPO            | CMA-ES         | GA (Self-Play) | Other Info                                                                 |
+| ------------------------------------------------------------------------------ | -------------- | -------------- | -------------- | -------------- | -------------------------------------------------------------------------- |
+| PPO                                                                            | 1.377 ± 1.133  | —              | 0.133 ± 0.414  | -3.128 ± 1.509 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| CMA-ES                                                                         | 1.148 ± 1.071  | -0.133 ± 0.414 | —              | -0.301 ± 0.618 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| GA (Self-Play)                                                                 | 0.353 ± 0.728  | 3.128 ± 1.509  | 0.301 ± 0.618  | —              | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| CMA-ES (Self-Play)                                                             | -0.071 ± 0.827 | -0.749 ± 0.846 | -0.351 ± 0.651 | -4.923 ± 0.342 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| PPO (Self-Play)                                                                | -0.371 ± 1.085 | 0.119 ± 1.46   | -2.304 ± 1.392 | -0.42 ± 0.717  | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| [Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |                |                |
 
 It is interesting to note that while GA (Self-Play) did not perform as well against the baseline policy compared to PPO and CMA-ES, it is a superior policy if evaluated against these methods that trained directly against the baseline policy.
 
@@ -234,17 +280,17 @@ It is interesting to note that while GA (Self-Play) did not perform as well agai
 
 Results for pixel observation version of the environment (`SlimeVolleyPixel-v0` or `SlimeVolleyNoFrameskip-v0`):
 
-|Pixel Observation|Average Score|Episodes|Other Info
-|---|---|---|---|
-|Maximum Possible Score|5.0| | |
-|PPO | 0.435 ± 0.961 | 1000 | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md)
-|Rainbow | 0.037 ± 0.994 | 1000 | [link](https://github.com/hardmaru/RainbowSlimeVolley)
-|A2C | -0.079 ± 1.091 | 1000 | [link](https://github.com/hardmaru/rlzoo)
-|ACKTR | -1.183 ± 1.480 | 1000 | [link](https://github.com/hardmaru/rlzoo)
-|ACER | -1.789 ± 1.632 | 1000 | [link](https://github.com/hardmaru/rlzoo)
-|DQN | -4.091 ± 1.242 | 1000 | [link](https://github.com/hardmaru/rlzoo)
-|Random Policy | -4.866 ± 0.372 | 1000 | 
-|[Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |  | (>= 1000) | 
+| Pixel Observation                                                              | Average Score  | Episodes  | Other Info                                                                 |
+| ------------------------------------------------------------------------------ | -------------- | --------- | -------------------------------------------------------------------------- |
+| Maximum Possible Score                                                         | 5.0            |           |                                                                            |
+| PPO                                                                            | 0.435 ± 0.961  | 1000      | [link](https://github.com/hardmaru/slimevolleygym/blob/master/TRAINING.md) |
+| Rainbow                                                                        | 0.037 ± 0.994  | 1000      | [link](https://github.com/hardmaru/RainbowSlimeVolley)                     |
+| A2C                                                                            | -0.079 ± 1.091 | 1000      | [link](https://github.com/hardmaru/rlzoo)                                  |
+| ACKTR                                                                          | -1.183 ± 1.480 | 1000      | [link](https://github.com/hardmaru/rlzoo)                                  |
+| ACER                                                                           | -1.789 ± 1.632 | 1000      | [link](https://github.com/hardmaru/rlzoo)                                  |
+| DQN                                                                            | -4.091 ± 1.242 | 1000      | [link](https://github.com/hardmaru/rlzoo)                                  |
+| Random Policy                                                                  | -4.866 ± 0.372 | 1000      |
+| [Add Method](https://github.com/hardmaru/slimevolleygym/edit/master/README.md) |                | (>= 1000) |
 
 ## Publications
 
