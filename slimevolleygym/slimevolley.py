@@ -101,7 +101,7 @@ rendering = None
 def checkRendering():
   global rendering
   if rendering is None:
-    from gym.envs.classic_control import rendering as rendering
+    import slimevolleygym.rendering as rendering
 
 def setPixelObsMode():
   """

@@ -68,12 +68,12 @@ if __name__=="__main__":
   env.seed(np.random.randint(0, 10000))
   #env.seed(689)
 
+  obs = env.reset()
+
   if RENDER_MODE:
     env.render()
     env.viewer.window.on_key_press = key_press
     env.viewer.window.on_key_release = key_release
-
-  obs = env.reset()
 
   steps = 0
   total_reward = 0
